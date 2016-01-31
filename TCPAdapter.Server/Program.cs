@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.ServiceModel;
 
 // State object for reading client data asynchronously
 public class StateObject
@@ -117,8 +118,14 @@ public class AsynchronousSocketListener
                 // client. Display it on the console.
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
                     content.Length, content);
+
+                // Send data to WCF workflow service
+                TCPAdapter.Server.RemoteWCFWorkflowService.ServiceClient svc = new TCPAdapter.Server.RemoteWCFWorkflowService.ServiceClient();
+                string svcresponse = svc.GetData(content.Length);
+
                 // Echo the data back to the client.
-                Send(handler, content);
+                //Send(handler, content);
+                Send(handler, svcresponse);
             }
             else
             {
